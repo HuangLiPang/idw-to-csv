@@ -14,6 +14,26 @@ Interpolating station values by [IDW](http://www.gitta.info/ContiSpatVar/de/html
 * python 3.6
 * numpy  1.16.4
 
+## Input Data Format
+```
+{
+  "date":"2019-01-01",
+  "feeds": [
+    {
+      "device_id": "AAA",
+      "c_d0": 12, 
+      "gps_lat": 23.23,
+      "gps_lon": 123.23
+    },
+    {
+      "device_id": "BBB",
+      "c_d0": 23,
+      "gps_lat": 24.24,
+      "gps_lon": 124.24
+    }
+  ]
+}
+```
 ## Options
 #### --version 
 &nbsp;&nbsp;&nbsp;&nbsp;show program's version number and exit
