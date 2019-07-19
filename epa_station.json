@@ -1,0 +1,157 @@
+{
+  "Nantou":
+  {
+    "gps_lat": 23.913,
+    "gps_lon": 120.685306
+  },
+  "Chiayi":
+  {
+    "gps_lat": 23.462778,
+    "gps_lon": 120.440833
+  },
+  "Puzi":
+  {
+    "gps_lat": 23.467123,
+    "gps_lon": 120.24781
+  },
+  "Keelung":
+  {
+    "gps_lat": 25.129167,
+    "gps_lon": 121.760056
+  },
+  "Yilan":
+  {
+    "gps_lat": 24.747917,
+    "gps_lon": 121.746394
+  },
+  "Hengchun":
+  {
+    "gps_lat": 21.958069,
+    "gps_lon": 120.788928
+  },
+  "Pingtung":
+  {
+    "gps_lat": 22.673081,
+    "gps_lon": 120.488033
+  },
+  "Changhua":
+  {
+    "gps_lat": 24.066,
+    "gps_lon": 120.541519
+  },
+  "Banqiao":
+  {
+    "gps_lat": 25.012972,
+    "gps_lon": 121.458667
+  },
+  "Xizhi":
+  {
+    "gps_lat": 25.067131,
+    "gps_lon": 121.6423
+  },
+  "Hsinchu":
+  {
+    "gps_lat": 24.805619,
+    "gps_lon": 120.972075
+  },
+  "Zhudong":
+  {
+    "gps_lat": 24.740644,
+    "gps_lon": 121.088903
+  },
+  "Pingzhen":
+  {
+    "gps_lat": 24.952786,
+    "gps_lon": 121.203986
+  },
+  "Taoyuan":
+  {
+    "gps_lat": 24.995368,
+    "gps_lon": 121.304383
+  },
+  "Magong":
+  {
+    "gps_lat": 23.569031,
+    "gps_lon": 119.566158
+  },
+  "Zhongming":
+  {
+    "gps_lat": 24.151958,
+    "gps_lon": 120.641092
+  },
+  "Fengyuan":
+  {
+    "gps_lat": 24.256586,
+    "gps_lon": 120.741711
+  },
+  "Yangming":
+  {
+    "gps_lat": 25.182722,
+    "gps_lon": 121.529583
+  },
+  "Wanhua":
+  {
+    "gps_lat": 25.046503,
+    "gps_lon": 121.507972
+  },
+  "Shilin":
+  {
+    "gps_lat": 25.105417,
+    "gps_lon": 121.515389
+  },
+  "Tainan":
+  {
+    "gps_lat": 22.984581,
+    "gps_lon": 120.202617
+  },
+  "Xinying":
+  {
+    "gps_lat": 23.305633,
+    "gps_lon": 120.31725
+  },
+  "Taitung":
+  {
+    "gps_lat": 22.755358,
+    "gps_lon": 121.15045
+  },
+  "Hualien":
+  {
+    "gps_lat": 23.971306,
+    "gps_lon": 121.599769
+  },
+  "Sanyi":
+  {
+    "gps_lat": 24.382942,
+    "gps_lon": 120.758833
+  },
+  "Miaoli":
+  {
+    "gps_lat": 24.565269,
+    "gps_lon": 120.8202
+  },
+  "Matsu":
+  {
+    "gps_lat": 26.160469,
+    "gps_lon": 119.949875
+  },
+  "Kinmen":
+  {
+    "gps_lat": 24.432133,
+    "gps_lon": 118.312256
+  },
+  "Douliu":
+  {
+    "gps_lat": 23.711853,
+    "gps_lon": 120.544994
+  },
+  "Qianjin":
+  {
+    "gps_lat": 22.632567,
+    "gps_lon": 120.288086
+  },
+  "Meinong":
+  {
+    "gps_lat": 22.883583,
+    "gps_lon": 120.530542
+  }
+}
