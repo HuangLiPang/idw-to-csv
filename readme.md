@@ -2,16 +2,17 @@
 **idw.py<i></i>** — IDW to CSV
 
 ## Synopsis
-| **idw.<i></i>py** \[options] \[_filename_]
-| **idw.<i></i>py** \[-h|--help|-v|--version]
+python **idw.<i></i>py** \[options] \[_filename_]  
+python **idw.<i></i>py** \[-h|--help|-v|--version]
 
 ## Description
 
 Interpolating station values by IDW algorithm and save to csv file.
 
 ## Prerequisites
-python 3.6
-numpy  1.16.4
+
+* python 3.6
+* numpy  1.16.4
 
 ## Options
 #### --version 
