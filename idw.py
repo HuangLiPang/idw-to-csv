@@ -1,34 +1,41 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 """
 Created on Jul 16 2019
-
 @author: huanglipang
+descriptions:
+  Interpolating station values by IDW algorithm and save to csv file.
+
+prerequisites:
+  python 3.6
+  numpy  1.16.4
 """
 
 import sys, json, time, numpy
 from math import sqrt, pow, log, floor, cos, pi
 from optparse import OptionParser, OptionGroup
 
-"""
+# input data format
+'''
 {
-  date:"2019-01-01",
-  feeds: [
+  "date":"2019-01-01",
+  "feeds": [
     {
-      device_id: "AAAAAA",
-      c_d0: 123, 
-      gps_lat: 23.23,
-      gps_lon: 23.23
+      "device_id": "AAA",
+      "c_d0": 12, 
+      "gps_lat": 23.23,
+      "gps_lon": 123.23
     },
     {
-      device_id: "AAAAAA",
-      c_d0: 123,
-      gps_lat: 23.23,
-      gps_lon: 23.23
-    },
+      "device_id": "BBB",
+      "c_d0": 23,
+      "gps_lat": 24.24,
+      "gps_lon": 124.24
+    }
   ]
 }
-"""
+'''
 
 # Print iterations progress
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
@@ -70,6 +77,7 @@ def IDW(data, options, outFileName):
       "max": 123.0, "min": 119
     }
   }
+  # lat and lon's accuracy is 1 decimal place
   BOUNDARY["lat"]["max"] = float(floor(options.boundary[0] * 10)) / 10
   BOUNDARY["lat"]["min"] = float(floor(options.boundary[1] * 10)) / 10
   BOUNDARY["lon"]["max"] = float(floor(options.boundary[2] * 10)) / 10
@@ -92,6 +100,7 @@ def IDW(data, options, outFileName):
   # length of 1 degree lon = 111.320 km
   # length of 1 degree lat = 110.574 km
   latToKm = 110.574
+  # adjust the 1 degree longititude length
   lonToKm = 111.320 * cos(options.average_latitude * pi / 180);
 
   latDiff = BOUNDARY["lat"]["max"] - BOUNDARY["lat"]["min"]
@@ -213,10 +222,13 @@ def IDW(data, options, outFileName):
 
   tStart = time.time()
   print("saving the csv file...")
+  # add longitude degrees as header
   csvHeader = ""
   interval = (BOUNDARY["lon"]["max"] - BOUNDARY["lon"]["min"]) / lonCellLength
   for i in range(lonCellLength):
     csvHeader = csvHeader + str(BOUNDARY["lon"]["min"] + interval * i) + ','
+
+  # save csv
   # https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
   numpy.savetxt(outFileName.replace(".json", ".csv"), 
                 pm25Value, fmt="%.2f", delimiter=",", header=csvHeader, comments='')
@@ -228,9 +240,12 @@ def main(argv):
   parser = OptionParser(usage="usage: %prog [options] filename",
                         version="%prog 1.0")
   idwGroup = OptionGroup(parser, "IDW Options")
+  # add option to group
+  # options
   idwGroup.add_option("-r", "--range",
                     action="store",
                     type="int",
+                    # options.range
                     dest="range",
                     default=10,
                     metavar="RANGE",
@@ -271,8 +286,10 @@ def main(argv):
 
   (options, args) = parser.parse_args()
 
+  # args only contains the filename
   if len(args) != 1:
     parser.error("wrong number of arguments.")
+  # check the boundary is valid or not
   if options.boundary[1] > options.boundary[0] or options.boundary[3] > options.boundary[2]:
     parser.error("invalid boundary.")
 

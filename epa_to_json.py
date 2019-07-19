@@ -31,11 +31,14 @@ def main(argv):
 
   (options, args) = parser.parse_args()
 
+  # args contains only input file
   if len(args) != 1:
     parser.error("wrong number of arguments.")
 
   data = None
   epaInfo = None
+
+  # convert input array to json
   try:
     with open(args[0],'r') as f:
       content = f.read()
@@ -45,6 +48,7 @@ def main(argv):
     print("[ERROR]: load %s error." % options.args[0])
     print(err)
 
+  # load epa info for coordinates
   try:
     with open(options.epa_station_info,'r') as f:
       epaInfo = json.load(f)
@@ -52,14 +56,27 @@ def main(argv):
     print("[ERROR]: load %s error." % options.epa_station_info)
     print(err)
 
-  # Create target Directory if don't exist
+  # create target directory if not exist
   try:
-    os.mkdir(options.out_dir)
-    print("directory %s Created" % options.out_dir)
+    if os.path.exists(options.out_dir):
+      print("%s exists" % options.out_dir)
+    else:
+      os.mkdir(options.out_dir)
+      print("directory %s created" % options.out_dir)
   except FileExistsError as err:
     print("[ERROR]: mkdir %s error." % options.out_dir) 
     print(err)
 
+  # convert data to the formate below
+  # data = {
+  #   "area": [
+  #     {
+  #       'Date': '2018-07-31', 
+  #       'PM10': 36.0833333333, 
+  #       'PM2.5': 17.5833333333
+  #     }
+  #   ]
+  # }
   area = ""
   while len(data["data"]):
     if area != data["data"][0]["device_id"]:
@@ -70,6 +87,7 @@ def main(argv):
     data["data"].pop(0)
   data.pop("data")
 
+  # convert data to idw.py input format
   for i in range(len(data[area])):
     result = {"date": "", "feeds": []}
     result["date"] = data[area][i]["Date"]
@@ -86,7 +104,7 @@ def main(argv):
       print("[ERROR]: save %s error." % outfilename)
       print(err)
 
-    print("epa data to json complete")
+  print("convert epa data to json complete")
 
 if __name__ == "__main__":
   main(sys.argv[1:])
