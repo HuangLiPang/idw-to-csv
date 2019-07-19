@@ -16,28 +16,28 @@ Interpolating station values by IDW algorithm and save to csv file.
 
 ## Options
 #### --version 
-&nbsp;&nbsp;show program's version number and exit
+&nbsp;&nbsp;&nbsp;&nbsp;show program's version number and exit
 
 #### -h, --help
-&nbsp;&nbsp;show this help message and exit
+&nbsp;&nbsp;&nbsp;&nbsp;show this help message and exit
 
 ### IDW Options:
 
 #### -r RANGE, --range=RANGE
-&nbsp;&nbsp;the effective range of AirBox in KM, default=10
+&nbsp;&nbsp;&nbsp;&nbsp;the effective range of AirBox in KM, default=10
 
 #### -f EXP_FACTOR, --exp-factor=EXP_FACTOR
-&nbsp;&nbsp;the exponential factor of IDW, default=2
+&nbsp;&nbsp;&nbsp;&nbsp;the exponential factor of IDW, default=2
 
 ### Coordinate Options:
 #### -p PRECISION, --precision=PRECISION
-&nbsp;&nbsp;the resolution of interpolation, default=1000
+&nbsp;&nbsp;&nbsp;&nbsp;the resolution of interpolation, default=1000
 
 #### -b LAT_MAX LAT_MIN LON_MAX LON_MIN, --boundary=LAT_MAX LAT_MIN LON_MAX LON_MIN
-&nbsp;&nbsp;the boundary of latitude and longitude, accuracy to 1 decimal place, default=26.0 21.0 123.0 119.0
+&nbsp;&nbsp;&nbsp;&nbsp;the boundary of latitude and longitude, accuracy to 1 decimal place, default=26.0 21.0 123.0 119.0
 
 #### -l AVERAGE_LATITUDE, --average-latitude=AVERAGE_LATITUDE
-&nbsp;&nbsp;average latitude for calculating km in lat and lon, default=23.5
+&nbsp;&nbsp;&nbsp;&nbsp;average latitude for calculating km in lat and lon, default=23.5
 
 ## Bugs
 See GitHub Issues: <https://github.com/HuangLiPang/idw-to-csv/issues>
