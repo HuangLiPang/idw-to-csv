@@ -7,7 +7,7 @@ python **idw.<i></i>py** \[-h|--help|-v|--version]
 
 ## Description
 
-Interpolating station values by IDW algorithm and save to csv file.
+Interpolating station values by [IDW](http://www.gitta.info/ContiSpatVar/de/html/Interpolatio_learningObject2.xhtml) algorithm and save to csv file.
 
 ## Prerequisites
 
