@@ -1,0 +1,6 @@
+# data
+*.json
+*.csv
+
+# config files
+.python-version

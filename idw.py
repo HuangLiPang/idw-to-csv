@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 16 14:50:27 2019
+Created on Jul 16 2019
 
 @author: huanglipang
 """
 
 import sys, json, time, numpy
-from math import sqrt, pow, log, cos, pi
-from optparse import OptionParser
+from math import sqrt, pow, log, floor, cos, pi
+from optparse import OptionParser, OptionGroup
 
 """
 {
@@ -70,10 +70,10 @@ def IDW(data, options, outFileName):
       "max": 123.0, "min": 119
     }
   }
-  BOUNDARY["lat"]["max"] = options.boundary[0]
-  BOUNDARY["lat"]["min"] = options.boundary[1]
-  BOUNDARY["lon"]["max"] = options.boundary[2]
-  BOUNDARY["lon"]["min"] = options.boundary[3]
+  BOUNDARY["lat"]["max"] = float(floor(options.boundary[0] * 10)) / 10
+  BOUNDARY["lat"]["min"] = float(floor(options.boundary[1] * 10)) / 10
+  BOUNDARY["lon"]["max"] = float(floor(options.boundary[2] * 10)) / 10
+  BOUNDARY["lon"]["min"] = float(floor(options.boundary[3] * 10)) / 10
   # BOUNDARY = {
   #   "lat": {"min": 21.0, "max": 26.0},
   #   "lon": {"min": 119.0, "max": 123.0}
@@ -91,21 +91,18 @@ def IDW(data, options, outFileName):
   # a cell of 1 lat * 1 lon
   # length of 1 degree lon = 111.320 km
   # length of 1 degree lat = 110.574 km
-  GRID_SIZE = 1.0 / PRECISION
   latToKm = 110.574
   lonToKm = 111.320 * cos(options.average_latitude * pi / 180);
 
-  latDiff = int(BOUNDARY["lat"]["max"] - BOUNDARY["lat"]["min"])
-  lonDiff = int(BOUNDARY["lon"]["max"] - BOUNDARY["lon"]["min"])
+  latDiff = BOUNDARY["lat"]["max"] - BOUNDARY["lat"]["min"]
+  lonDiff = BOUNDARY["lon"]["max"] - BOUNDARY["lon"]["min"]
 
-  lonCellLength = lonDiff * PRECISION
-  latCellLength = latDiff * PRECISION
+  lonCellLength = int(lonDiff * PRECISION)
+  latCellLength = int(latDiff * PRECISION)
   print("boundary:")
-  print("  latitude:")
-  print("    min: %3.3f, max: %3.3f" % (BOUNDARY["lat"]["min"], BOUNDARY["lat"]["max"]))
-  print("  longitude:")
-  print("    min: %3.3f, max: %3.3f\n" % (BOUNDARY["lon"]["min"], BOUNDARY["lon"]["max"]))
-  print("precision: %d, effective range: %d km\n" % (PRECISION, EFFECTIVE_RANGE))
+  print("  latitude: %3.1f ~ %3.1f" % (BOUNDARY["lat"]["min"], BOUNDARY["lat"]["max"]))
+  print("  longitude: %3.1f ~ %3.1f" % (BOUNDARY["lon"]["min"], BOUNDARY["lon"]["max"]))
+  print("precision: %d, effective range: %d km" % (PRECISION, EFFECTIVE_RANGE))
   print("cells in lon: %d, cells in lat: %d\n" % (lonCellLength, latCellLength))
   # numpy.zeros returns a new array of given shape and type, filled with zeros.
   # cell[lat][lon]
@@ -120,8 +117,8 @@ def IDW(data, options, outFileName):
                        dtype=float, order='C')
   
   progressBarLen = len(data["feeds"])
-  print("inversed distance weighted calculating start!\n")
-  print("calculating interpolation...\n")
+  print("IDW calculating start")
+  print("calculating interpolation...")
   printProgressBar(0, progressBarLen, prefix = 'Progress:', suffix = 'Complete', length = 50)
   tStart = time.time()
   for progressIdx, point in enumerate(data["feeds"]):
@@ -160,11 +157,11 @@ def IDW(data, options, outFileName):
       if(x1 < 0):
         x1 = 0
       if(x2 >= lonCellLength):
-        x2 = lonDiff * PRECISION - 1
+        x2 = lonCellLength - 1
       if(y1 < 0):
         y1 = 0
       if(y2 >= latCellLength):
-        y2 = latDiff * PRECISION - 1
+        y2 = latCellLength - 1
       
       # transfer lat lon into index
       lat = int((lat - BOUNDARY["lat"]["min"]) * PRECISION)
@@ -197,7 +194,7 @@ def IDW(data, options, outFileName):
     printProgressBar(progressIdx + 1, progressBarLen, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
   progressBarLen = latCellLength
-  print("calculating cell value...\n")
+  print("calculating cell value...")
   printProgressBar(0, progressBarLen, prefix = 'Progress:', suffix = 'Complete', length = 50)
   for y in range(0, latCellLength):
     for x in range(0, lonCellLength):
@@ -211,59 +208,73 @@ def IDW(data, options, outFileName):
       pm25Value[y][x] = interpolateValue
     printProgressBar(y + 1, progressBarLen, prefix = 'Progress:', suffix = 'Complete', length = 50)
   tEnd = time.time()
-  print("complete IDW in %f seconds\n" % (tEnd - tStart))
+  print("completing IDW used %f seconds\n" % (tEnd - tStart))
+  
+
+  tStart = time.time()
+  print("saving the csv file...")
+  csvHeader = ""
+  interval = (BOUNDARY["lon"]["max"] - BOUNDARY["lon"]["min"]) / lonCellLength
+  for i in range(lonCellLength):
+    csvHeader = csvHeader + str(BOUNDARY["lon"]["min"] + interval * i) + ','
   # https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-  print("saving the csv file...\n")
-  numpy.savetxt(outFileName.replace(".json", ".csv"), pm25Value, fmt="%.2f", delimiter=",")
+  numpy.savetxt(outFileName.replace(".json", ".csv"), 
+                pm25Value, fmt="%.2f", delimiter=",", header=csvHeader, comments='')
+  tEnd = time.time()
+  print("saving file used %f seconds\n" % (tEnd - tStart))
 
 def main(argv):
   # https://docs.python.org/3.1/library/optparse.html#reference-guide
   parser = OptionParser(usage="usage: %prog [options] filename",
                         version="%prog 1.0")
-  parser.add_option("-p", "--precision",
-                    action="store",
-                    type="int",
-                    dest="precision",
-                    default=1000,
-                    metavar="PRECISION",
-                    help="the resolution of interpolation, default=1000")
-  parser.add_option("-b", "--boundary",
-                    nargs=4,
-                    action="store", # optional because action defaults to "store"
-                    type="float",
-                    dest="boundary",
-                    default=(26.0, 21.0, 123.0, 119.0),
-                    metavar="LAT_MAX LAT_MIN LON_MAX LON_MIN",
-                    help="the boundary of latitude and longitude, default=26 21 123 119")
-  parser.add_option("-r", "--range",
+  idwGroup = OptionGroup(parser, "IDW Options")
+  idwGroup.add_option("-r", "--range",
                     action="store",
                     type="int",
                     dest="range",
                     default=10,
                     metavar="RANGE",
                     help="the effective range of AirBox in KM, default=10")
-  parser.add_option("-f", "--exp-factor",
+  idwGroup.add_option("-f", "--exp-factor",
                     action="store",
                     type="int",
                     dest="exp_factor",
                     default=2,
                     metavar="EXP_FACTOR",
                     help="the exponential factor of IDW, default=2")
-  parser.add_option("-l", "--average-latitude",
+  coordinateGroup = OptionGroup(parser, "Coordinate Options")
+  coordinateGroup.add_option("-p", "--precision",
+                    action="store",
+                    type="int",
+                    dest="precision",
+                    default=1000,
+                    metavar="PRECISION",
+                    help="the resolution of interpolation, default=1000")
+  coordinateGroup.add_option("-b", "--boundary",
+                    nargs=4,
+                    action="store", # optional because action defaults to "store"
+                    type="float",
+                    dest="boundary",
+                    default=(26.0, 21.0, 123.0, 119.0),
+                    metavar="LAT_MAX LAT_MIN LON_MAX LON_MIN",
+                    help="the boundary of latitude and longitude, accuracy to 1 decimal place, default=26.0 21.0 123.0 119.0")
+  
+  coordinateGroup.add_option("-l", "--average-latitude",
                     action="store",
                     type="float",
                     dest="average_latitude",
                     default=23.5,
                     metavar="AVERAGE_LATITUDE",
                     help="average latitude for calculating km in lat and lon, default=23.5")
+  parser.add_option_group(idwGroup)
+  parser.add_option_group(coordinateGroup)
+
   (options, args) = parser.parse_args()
 
   if len(args) != 1:
     parser.error("wrong number of arguments.")
   if options.boundary[1] > options.boundary[0] or options.boundary[3] > options.boundary[2]:
     parser.error("invalid boundary.")
-  # print(options)
-  # print(args)
 
   data = openFile(args[0])
   IDW(data, options, args[0])
